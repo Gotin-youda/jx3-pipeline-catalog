@@ -19,11 +19,11 @@ spec:
       cd $SUBDIR
       git checkout $PULL_PULL_SHA
       echo "checked out revision: $PULL_PULL_SHA to dir: $SUBDIR"
-    image: gcr.io/tekton-releases/github.com/tektoncd/pipeline/cmd/git-init:v0.19.0
+    image: gcr.gotin.online/tekton-releases/github.com/tektoncd/pipeline/cmd/git-init:v0.19.0
     name: git-clone
     resources: { }
     workingDir: /workspace
-  - image: ghcr.io/jenkins-x/jx-boot:3.1.292
+  - image: ghcr.gotin.online/jenkins-x/jx-boot:3.1.292
     name: git-merge
     resources: {}
     script: |
