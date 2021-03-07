@@ -32,7 +32,7 @@ spec:
           script: |
             #!/bin/sh
             git config --global http.https://github.com.proxy socks5://192.168.0.210:10808
-            npm install
+            npm --registry=https://r.npm.taobao.org install
         - image: node:12-slim
           name: build-npm-test
           resources: {}
