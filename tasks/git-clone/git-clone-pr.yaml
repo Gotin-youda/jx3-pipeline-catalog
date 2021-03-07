@@ -10,6 +10,7 @@ spec:
   steps:
   - script: |
       #!/bin/sh
+      git config --global http.https://github.com.proxy socks5://192.168.0.210:10808
       export SUBDIR="source"
       echo "git cloning url: $REPO_URL version $PULL_PULL_SHA to dir: $SUBDIR"
       git config --global --add user.name ${GIT_AUTHOR_NAME:-jenkins-x-bot}
@@ -28,5 +29,6 @@ spec:
     resources: {}
     script: |
       #!/usr/bin/env sh
+      git config --global http.https://github.com.proxy socks5://192.168.0.210:10808
       jx gitops git merge variables
     workingDir: /workspace/source
