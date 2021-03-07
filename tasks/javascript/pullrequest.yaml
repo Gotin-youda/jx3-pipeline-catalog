@@ -16,6 +16,7 @@ spec:
             requests:
               cpu: 400m
               memory: 512Mi
+    
           workingDir: /workspace/source
         steps:
         - image: ghcr.gotin.online/jenkins-x/jx-boot:3.1.292
@@ -23,18 +24,21 @@ spec:
           resources: {}
           script: |
             #!/usr/bin/env sh
+            git config --global http.https://github.com.proxy socks5://192.168.0.210:10808
             jx gitops variables
         - image: node:12-slim
           name: build-npm-install
           resources: {}
           script: |
             #!/bin/sh
+            git config --global http.https://github.com.proxy socks5://192.168.0.210:10808
             npm install
         - image: node:12-slim
           name: build-npm-test
           resources: {}
           script: |
             #!/bin/sh
+            git config --global http.https://github.com.proxy socks5://192.168.0.210:10808
             CI=true DISPLAY=:99 npm test
         - image: gcr.gotin.online/jenkinsxio/jx-registry:0.0.11
           name: check-registry
@@ -43,6 +47,7 @@ spec:
           resources: {}
           script: |
             #!/busybox/sh
+            git config --global http.https://github.com.proxy socks5://192.168.0.210:10808
             source .jx/variables.sh
             cp /tekton/creds-secrets/tekton-container-registry-auth/.dockerconfigjson /kaniko/.docker/config.json
             /kaniko/executor $KANIKO_FLAGS --context=/workspace/source --dockerfile=Dockerfile --destination=$DOCKER_REGISTRY/$DOCKER_REGISTRY_ORG/$APP_NAME:$VERSION
@@ -51,6 +56,7 @@ spec:
           resources: {}
           script: |
             #!/usr/bin/env sh
+            git config --global http.https://github.com.proxy socks5://192.168.0.210:10808
             source .jx/variables.sh
             jx preview create
   podTemplate: {}
