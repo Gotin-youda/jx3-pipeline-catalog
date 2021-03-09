@@ -25,24 +25,23 @@ spec:
             #!/usr/bin/env sh
             git config --global http.https://github.com.proxy socks5://192.168.0.210:10808
             jx gitops variables
-        - image: node:12-slim
+        - image: node:lts-alpine
           name: build-npm-install
           resources: {}
           script: |
             #!/bin/sh
             npm install --registry=https://r.npm.taobao.org
-        - image: node:12-slim
+        - image: node:lts-alpine
           name: build-npm-test
           resources: {}
           script: |
             #!/bin/sh
             CI=true DISPLAY=:99 npm test
-        - image: node:12-slim
+        - image: node:lts-alpine
           name: build-ui-build
           resources: {}
           script: |
             #!/bin/sh
-            git config --global http.https://github.com.proxy socks5://192.168.0.210:10808
             npm run build
         - image: gcr.gotin.online/jenkinsxio/jx-registry:0.0.11
           name: check-registry
