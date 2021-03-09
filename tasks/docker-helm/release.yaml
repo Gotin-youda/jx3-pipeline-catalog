@@ -18,21 +18,21 @@ spec:
               memory: 512Mi
           workingDir: /workspace/source
         steps:
-        - image: gcr.io/jenkinsxio/jx-release-version:2.2.3
+        - image: gcr.gotin.online/jenkinsxio/jx-release-version:2.2.3
           name: next-version
           resources: {}
           script: |
             #!/usr/bin/env sh
             jx-release-version > VERSION
-        - image: ghcr.io/jenkins-x/jx-boot:3.1.292
+        - image: ghcr.gotin.online/jenkins-x/jx-boot:3.1.292
           name: jx-variables
           resources: {}
           script: |
             #!/usr/bin/env sh
             jx gitops variables
-        - image: gcr.io/jenkinsxio/jx-registry:0.0.11
+        - image: gcr.gotin.online/jenkinsxio/jx-registry:0.0.11
           name: check-registry
-        - image: gcr.io/kaniko-project/executor:debug-v1.3.0
+        - image: gcr.gotin.online/kaniko-project/executor:debug-v1.3.0
           name: build-container-build
           resources: {}
           script: |
@@ -40,7 +40,7 @@ spec:
             source .jx/variables.sh
             cp /tekton/creds-secrets/tekton-container-registry-auth/.dockerconfigjson /kaniko/.docker/config.json
             /kaniko/executor $KANIKO_FLAGS --context=/workspace/source --dockerfile=Dockerfile --destination=$DOCKER_REGISTRY/$DOCKER_REGISTRY_ORG/$APP_NAME:$VERSION
-        - image: gcr.io/jenkinsxio/jx-changelog:0.0.34
+        - image: gcr.gotin.online/jenkinsxio/jx-changelog:0.0.34
           name: promote-changelog
           resources: {}
           script: |
@@ -59,7 +59,7 @@ spec:
             git push --force origin v$VERSION
 
             jx changelog create --version v${VERSION}
-        - image: ghcr.io/jenkins-x/jx-boot:3.1.292
+        - image: ghcr.gotin.online/jenkins-x/jx-boot:3.1.292
           name: promote-helm-release
           resources: {}
           script: |
