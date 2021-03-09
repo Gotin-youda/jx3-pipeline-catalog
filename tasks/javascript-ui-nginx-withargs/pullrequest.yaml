@@ -31,12 +31,12 @@ spec:
           script: |
             #!/bin/sh
             npm install --registry=https://r.npm.taobao.org
-        - image: node:lts-alpine
-          name: build-npm-test
-          resources: {}
-          script: |
-            #!/bin/sh
-            CI=true DISPLAY=:99 npm test
+#         - image: node:lts-alpine
+#           name: build-npm-test
+#           resources: {}
+#           script: |
+#             #!/bin/sh
+#             CI=true DISPLAY=:99 npm test
         - image: node:lts-alpine
           name: build-ui-build
           resources: {}
