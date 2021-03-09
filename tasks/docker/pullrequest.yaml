@@ -18,15 +18,15 @@ spec:
               memory: 512Mi
           workingDir: /workspace/source
         steps:
-        - image: ghcr.io/jenkins-x/jx-boot:3.1.292
+        - image: ghcr.gotin.online/jenkins-x/jx-boot:3.1.292
           name: jx-variables
           resources: {}
           script: |
             #!/usr/bin/env sh
             jx gitops variables
-        - image: gcr.io/jenkinsxio/jx-registry:0.0.11
+        - image: gcr.gotin.online/jenkinsxio/jx-registry:0.0.11
           name: check-registry
-        - image: gcr.io/kaniko-project/executor:debug-v1.3.0
+        - image: gcr.gotin.online/kaniko-project/executor:debug-v1.3.0
           name: build-container-build
           resources: {}
           script: |
