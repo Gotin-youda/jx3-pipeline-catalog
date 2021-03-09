@@ -30,13 +30,14 @@ spec:
           resources: {}
           script: |
             #!/bin/sh
+            npm install node-sass@^4.9.2 --registry=https://r.npm.taobao.org
             npm install --registry=https://r.npm.taobao.org
-#         - image: node:lts-alpine
-#           name: build-npm-test
-#           resources: {}
-#           script: |
-#             #!/bin/sh
-#             CI=true DISPLAY=:99 npm test
+        - image: node:lts-alpine
+          name: build-npm-test
+          resources: {}
+          script: |
+            #!/bin/sh
+            CI=true DISPLAY=:99 npm test
         - image: node:lts-alpine
           name: build-ui-build
           resources: {}
