@@ -25,7 +25,7 @@ spec:
             #!/usr/bin/env sh
             git config --global http.https://github.com.proxy socks5://192.168.0.210:10808
             jx gitops variables
-        - image: python3.9-nodejs15-alpine
+        - image: nikolaik/python-nodejs:python3.9-nodejs15-alpine
           name: build-npm-install
           resources: {}
           script: |
