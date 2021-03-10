@@ -5,11 +5,11 @@ metadata:
   name: pullrequest
 spec:
   pipelineSpec:
-  params:
-    - name: action
-      description: npm build used action
-      type: string
-      default: buildprod
+    params:
+      - name: action
+        description: npm build used action
+        type: string
+        default: buildprod
     tasks:
     - name: from-build-pack
       resources: {}
