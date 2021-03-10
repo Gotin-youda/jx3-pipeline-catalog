@@ -1,0 +1,83 @@
+apiVersion: tekton.dev/v1beta1
+kind: PipelineRun
+metadata:
+  creationTimestamp: null
+  name: pullrequest
+spec:
+  pipelineSpec:
+  params:
+    - name: action
+      description: npm build used action
+      type: string
+      default: buildprod
+    tasks:
+    - name: from-build-pack
+      resources: {}
+      taskSpec:
+        metadata: {}
+        params:
+        - name: action
+          description: npm build used action
+          type: string
+          default: buildprod
+        stepTemplate:
+          name: ""
+          resources:
+            requests:
+              cpu: 400m
+              memory: 512Mi
+          workingDir: /workspace/source
+          env:
+          - name: 
+        steps:
+        - image: ghcr.io/jenkins-x/jx-boot:3.1.292
+          name: jx-variables
+          resources: {}
+          script: |
+            #!/usr/bin/env sh
+            git config --global http.https://github.com.proxy socks5://192.168.0.210:10808
+            jx gitops variables
+        # - image: node:lts-alpine
+        #   name: build-npm-install
+        #   resources: {}
+        #   script: |
+        #     #!/bin/sh
+        #     npm install node-sass@^4.9.2 --registry=https://r.npm.taobao.org
+        #     npm install --registry=https://r.npm.taobao.org
+        # - image: node:lts-alpine
+        #   name: build-npm-test
+        #   resources: {}
+        #   script: |
+        #     #!/bin/sh
+        #     CI=true DISPLAY=:99 npm test
+        # - image: node:lts-alpine
+        #   name: build-ui-build
+        #   resources: {}
+        #   script: |
+        #     #!/bin/sh
+        #     npm run build
+        - image: gcr.gotin.online/jenkinsxio/jx-registry:0.0.11
+          name: check-registry
+        - image: gcr.gotin.online/kaniko-project/executor:debug-v1.3.0
+          name: build-container-build
+          resources: {}
+          script: |
+            #!/busybox/sh
+            set -x
+            source .jx/variables.sh
+            git config --global http.https://github.com.proxy socks5://192.168.0.210:10808
+            cp /tekton/creds-secrets/tekton-container-registry-auth/.dockerconfigjson /kaniko/.docker/config.json
+            /kaniko/executor $KANIKO_FLAGS --context=/workspace/source --dockerfile=Dockerfile --destination=$DOCKER_REGISTRY/$DOCKER_REGISTRY_ORG/$APP_NAME:$VERSION \
+              --build-arg action=$ACTION
+        - image: ghcr.gotin.online/jenkins-x/jx-preview:0.0.168
+          name: promote-jx-preview
+          resources: {}
+          script: |
+            #!/usr/bin/env sh
+            git config --global http.https://github.com.proxy socks5://192.168.0.210:10808
+            source .jx/variables.sh
+            jx preview create
+  podTemplate: {}
+  serviceAccountName: tekton-bot
+  timeout: 240h0m0s
+status: {}
