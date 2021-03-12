@@ -22,13 +22,14 @@ spec:
           default: buildprod
         stepTemplate:
           name: ""
+          env:
+          - name: ACTION
+            value: $(inputs.params.action)
           resources:
             requests:
               cpu: 400m
               memory: 512Mi
           workingDir: /workspace/source
-          env:
-          - name: 
         steps:
         - image: ghcr.io/jenkins-x/jx-boot:3.1.292
           name: jx-variables
@@ -37,29 +38,13 @@ spec:
             #!/usr/bin/env sh
             git config --global http.https://github.com.proxy socks5://192.168.0.210:10808
             jx gitops variables
-        # - image: node:lts-alpine
-        #   name: build-npm-install
-        #   resources: {}
-        #   script: |
-        #     #!/bin/sh
-        #     npm install node-sass@^4.9.2 --registry=https://r.npm.taobao.org
-        #     npm install --registry=https://r.npm.taobao.org
-        # - image: node:lts-alpine
-        #   name: build-npm-test
-        #   resources: {}
-        #   script: |
-        #     #!/bin/sh
-        #     CI=true DISPLAY=:99 npm test
-        # - image: node:lts-alpine
-        #   name: build-ui-build
-        #   resources: {}
-        #   script: |
-        #     #!/bin/sh
-        #     npm run build
         - image: gcr.gotin.online/jenkinsxio/jx-registry:0.0.11
           name: check-registry
         - image: gcr.gotin.online/kaniko-project/executor:debug-v1.3.0
           name: build-container-build
+          env:
+          - name: ACTION
+            value: $(inputs.params.action)
           resources: {}
           script: |
             #!/busybox/sh
