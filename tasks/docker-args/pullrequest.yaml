@@ -11,57 +11,57 @@ spec:
         type: string
         default: buildprod
     tasks:
-    - name: from-build-pack
-      resources: {}
-      taskSpec:
-        metadata: {}
-        params:
-        - name: action
-          description: npm build used action
-          type: string
-          default: buildprod
-        stepTemplate:
-          name: ""
-          env:
-          - name: ACTION
-            value: $(inputs.params.action)
-          resources:
-            requests:
-              cpu: 400m
-              memory: 512Mi
-          workingDir: /workspace/source
-        steps:
-        - image: ghcr.io/jenkins-x/jx-boot:3.1.292
-          name: jx-variables
-          resources: {}
-          script: |
-            #!/usr/bin/env sh
-            git config --global http.https://github.com.proxy socks5://192.168.0.210:10808
-            jx gitops variables
-        - image: gcr.gotin.online/jenkinsxio/jx-registry:0.0.11
-          name: check-registry
-        - image: gcr.gotin.online/kaniko-project/executor:debug-v1.3.0
-          name: build-container-build
-          env:
-          - name: ACTION
-            value: $(inputs.params.action)
-          resources: {}
-          script: |
-            #!/busybox/sh
-            set -x
-            source .jx/variables.sh
-            git config --global http.https://github.com.proxy socks5://192.168.0.210:10808
-            cp /tekton/creds-secrets/tekton-container-registry-auth/.dockerconfigjson /kaniko/.docker/config.json
-            /kaniko/executor $KANIKO_FLAGS --context=/workspace/source --dockerfile=Dockerfile --destination=$DOCKER_REGISTRY/$DOCKER_REGISTRY_ORG/$APP_NAME:$VERSION \
-              --build-arg action=$ACTION
-        - image: ghcr.gotin.online/jenkins-x/jx-preview:0.0.168
-          name: promote-jx-preview
-          resources: {}
-          script: |
-            #!/usr/bin/env sh
-            git config --global http.https://github.com.proxy socks5://192.168.0.210:10808
-            source .jx/variables.sh
-            jx preview create
+      - name: from-build-pack
+        resources: {}
+        taskSpec:
+          metadata: {}
+          params:
+            - name: action
+              description: npm build used action
+              type: string
+              default: buildprod
+          stepTemplate:
+            name: ""
+            env:
+              - name: ACTION
+                value: $(inputs.params.action)
+            resources:
+              requests:
+                cpu: 400m
+                memory: 512Mi
+            workingDir: /workspace/source
+          steps:
+            - image: ghcr.io/jenkins-x/jx-boot:3.1.292
+              name: jx-variables
+              resources: {}
+              script: |
+                #!/usr/bin/env sh
+                git config --global http.https://github.com.proxy socks5://192.168.0.210:10808
+                jx gitops variables
+            - image: gcr.gotin.online/jenkinsxio/jx-registry:0.0.11
+              name: check-registry
+            - image: gcr.gotin.online/kaniko-project/executor:debug-v1.3.0
+              name: build-container-build
+              env:
+                - name: ACTION
+                  value: $(inputs.params.action)
+              resources: {}
+              script: |
+                #!/busybox/sh
+                set -x
+                source .jx/variables.sh
+                git config --global http.https://github.com.proxy socks5://192.168.0.210:10808
+                cp /tekton/creds-secrets/tekton-container-registry-auth/.dockerconfigjson /kaniko/.docker/config.json
+                /kaniko/executor $KANIKO_FLAGS --context=/workspace/source --dockerfile=Dockerfile --destination=$DOCKER_REGISTRY/$DOCKER_REGISTRY_ORG/$APP_NAME:$VERSION \
+                  --build-arg action=$ACTION
+            - image: ghcr.gotin.online/jenkins-x/jx-preview:0.0.168
+              name: promote-jx-preview
+              resources: {}
+              script: |
+                #!/usr/bin/env sh
+                git config --global http.https://github.com.proxy socks5://192.168.0.210:10808
+                source .jx/variables.sh
+                jx preview create
   podTemplate: {}
   serviceAccountName: tekton-bot
   timeout: 240h0m0s
