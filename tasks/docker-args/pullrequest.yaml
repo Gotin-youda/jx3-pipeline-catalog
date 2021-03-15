@@ -27,6 +27,9 @@ spec:
                 cpu: 400m
                 memory: 512Mi
             workingDir: /workspace/source
+            env:
+              - name: ACTION
+                value: "$(params.action)"
           steps:
             - image: ghcr.io/jenkins-x/jx-boot:3.1.292
               name: jx-variables
@@ -39,9 +42,6 @@ spec:
               name: check-registry
             - image: gcr.gotin.online/kaniko-project/executor:debug-v1.3.0
               name: build-container-build
-              env:
-                - name: ACTION
-                  value: ${params.action}
               resources: {}
               script: |
                 #!/busybox/sh
