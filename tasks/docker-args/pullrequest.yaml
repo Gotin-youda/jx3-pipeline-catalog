@@ -32,7 +32,7 @@ spec:
             workingDir: /workspace/source
             env:
               - name: ACTION
-                value: ${inputs.params.action}
+                value: $(inputs.params.action)
           steps:
             - image: ghcr.io/jenkins-x/jx-boot:3.1.292
               name: jx-variables
@@ -56,7 +56,7 @@ spec:
                 git config --global http.https://github.com.proxy socks5://192.168.0.210:10808
                 cp /tekton/creds-secrets/tekton-container-registry-auth/.dockerconfigjson /kaniko/.docker/config.json
                 /kaniko/executor $KANIKO_FLAGS --context=/workspace/source --dockerfile=Dockerfile --destination=$DOCKER_REGISTRY/$DOCKER_REGISTRY_ORG/$APP_NAME:$VERSION \
-                  --build-arg action=$ACTION
+                  --build-arg "action=$ACTION"
             - image: ghcr.gotin.online/jenkins-x/jx-preview:0.0.168
               name: promote-jx-preview
               resources: {}
