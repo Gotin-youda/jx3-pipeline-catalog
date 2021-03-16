@@ -46,9 +46,7 @@ spec:
                 #!/busybox/sh
                 source .jx/variables.sh
                 cp /tekton/creds-secrets/tekton-container-registry-auth/.dockerconfigjson /kaniko/.docker/config.json
-                /kaniko/executor $KANIKO_FLAGS --context=/workspace/source --dockerfile=Dockerfile \
-                  --destination=$DOCKER_REGISTRY/$DOCKER_REGISTRY_ORG/$APP_NAME:$VERSION "s/repository:.*/repository: $DOCKER_REGISTRY\/$DOCKER_REGISTRY_ORG\/$APP_NAME/" "s/repository:.*/repository: $DOCKER_REGISTRY\/$DOCKER_REGISTRY_ORG\/$APP_NAME/" \ 
-                  --build-arg action=$ACTION
+                /kaniko/executor $KANIKO_FLAGS --context=/workspace/source --dockerfile=Dockerfile --destination=$DOCKER_REGISTRY/$DOCKER_REGISTRY_ORG/$APP_NAME:$VERSION --build-arg action=$ACTION
             - image: gcr.gotin.online/jenkinsxio/jx-changelog:0.0.34
               name: promote-changelog
               resources: {}
